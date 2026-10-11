@@ -1,0 +1,26 @@
+{
+  "gardenLight": {
+    "name": "Garden Light System",
+    "manufacturer": "n0rt0nthec4t",
+    "model": "HomeKit Garden Light System",
+    "zones": [
+      {
+        "name": "Light 1",
+        "pin": 12,
+        "enabled": true
+      },
+      {
+        "name": "Light 2",
+        "pin": 13,
+        "enabled": true
+      }
+    ]
+  },
+  "options": {
+    "debug": false,
+    "eveHistory": true,
+    "hkPairingCode": "031-45-154",
+    "webUIPort": 8581,
+    "webUIBearerToken": ""
+  }
+}

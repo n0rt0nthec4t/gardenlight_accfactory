@@ -1,0 +1,87 @@
+{
+  "type": "object",
+  "required": [
+    "gardenLight"
+  ],
+  "properties": {
+    "gardenLight": {
+      "type": "object",
+      "title": "Garden Lights",
+      "properties": {
+        "zones": {
+          "type": "array",
+          "title": "Light Zones",
+          "minItems": 0,
+          "items": {
+            "type": "object",
+            "required": [
+              "pin"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "default": "Light Zone"
+              },
+              "pin": {
+                "type": "integer",
+                "title": "Pulse Width Modulation Pin",
+                "enum": [
+                  12,
+                  13,
+                  18,
+                  19
+                ],
+                "uniqueEnumGroups": [
+                  [12, 18],
+                  [13, 19]
+                ]
+              },
+              "enabled": {
+                "type": "boolean",
+                "title": "Enabled",
+                "default": true
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "zones"
+      ]
+    },
+    "options": {
+      "type": "object",
+      "title": "Options",
+      "properties": {
+        "eveHistory": {
+          "type": "boolean",
+          "title": "Eve History",
+          "default": true
+        },
+        "debug": {
+          "type": "boolean",
+          "title": "Debug Logging",
+          "default": false
+        },
+        "hkPairingCode": {
+          "type": "string",
+          "title": "HomeKit Pairing Code",
+          "default": "031-45-154"
+        },
+        "webUIPort": {
+          "type": "integer",
+          "title": "Web UI Port (0 disables)",
+          "minimum": 0,
+          "maximum": 65535,
+          "default": 0
+        },
+        "webUIBearerToken": {
+          "type": "string",
+          "title": "Web UI Password",
+          "default": ""
+        }
+      }
+    }
+  }
+}
