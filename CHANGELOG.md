@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.0.3 (2026/10/16)
+
+### Added
+
+- Log zone power transitions at info level with the zone name, GPIO pin and brightness when turned on, including active zones switched off during shutdown.
+
+## v0.0.2 (2026/10/11)
 
 ### Changed
 

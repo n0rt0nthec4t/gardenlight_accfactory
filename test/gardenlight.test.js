@@ -1,6 +1,7 @@
 // Exercise the real HomeKit lifecycle and characteristic handlers with GPIO mocked.
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { format } from 'node:util';
 import HAP from '@homebridge/hap-nodejs';
 import GPIO from 'rpio';
 import GardenLight from '../dist/gardenlight.js';
@@ -98,6 +99,33 @@ test('a remaining zone keeps its channel subtype when the first zone is removed'
   assert.equal(light.lightZones[0].service.subtype, 2);
   await light.set({ pin: 13, power: true });
   assert.equal(light.lightZones[0].power, true);
+});
+
+test('logs successful power transitions without duplicate or brightness-only messages', async (t) => {
+  const { light, failurePins } = await setup(t);
+  const messages = [];
+  light.log = { info: (...args) => messages.push(format(...args)) };
+  const zone = light.lightZones[0];
+  failurePins.add(12);
+  await assert.rejects(light.set({ pin: 12, power: true }), /PWM failed/);
+  assert.deepEqual(messages, []);
+  failurePins.clear();
+  await light.set({ pin: 12, brightness: 75 });
+  await zone.service.getCharacteristic(HAP.Characteristic.On).handleSetRequest(true);
+  await light.set({ pin: 12, power: true });
+  await light.set({ pin: 12, brightness: 50 });
+  await zone.service.getCharacteristic(HAP.Characteristic.On).handleSetRequest(false);
+  await light.set({ pin: 12, power: false });
+  await light.set({ pin: 12, brightness: 25 });
+  await light.set({ pin: 13, power: true, brightness: 40 });
+  await light.shutdown();
+  await light.remove();
+  assert.deepEqual(messages, [
+    'Zone "Light 1" on GPIO 12 turned on at 75% brightness',
+    'Zone "Light 1" on GPIO 12 turned off',
+    'Zone "Light 2" on GPIO 13 turned on at 40% brightness',
+    'Zone "Light 2" on GPIO 13 turned off',
+  ]);
 });
 
 test('disabled zones never open GPIO or create services; history links to the first enabled zone', async (t) => {

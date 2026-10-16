@@ -24,7 +24,7 @@
 // - Zones start off; brightness changes while off keep the output off
 // - Commands and shutdown share the HomeKitDevice lifecycle queue
 //
-// Code version 2026.10.11
+// Code version 2026.10.12
 // Mark Hulskamp
 'use strict';
 
@@ -36,7 +36,7 @@ import HomeKitDevice from './HomeKitDevice.js';
 
 export default class GardenLight extends HomeKitDevice {
   static TYPE = 'GardenLight';
-  static VERSION = '2026.10.11';
+  static VERSION = '2026.10.12';
   static PWM_CHANNELS = new Map([
     [12, 0],
     [18, 0],
@@ -128,6 +128,9 @@ export default class GardenLight extends HomeKitDevice {
 
     // Light history records power transitions; brightness-only changes add no entry.
     if (powerChanged === true) {
+      this.log?.info?.(
+        'Zone "%s" on GPIO %s turned %s', zone.name, zone.pin, power === true ? 'on at ' + brightness + '% brightness' : 'off',
+      );
       await this.history(zone.service, { status: power === true ? 1 : 0 });
     }
   }
@@ -147,6 +150,10 @@ export default class GardenLight extends HomeKitDevice {
         this.#openedPins.delete(pin);
         const zone = this.lightZones.find((item) => item.pin === pin);
         if (zone !== undefined) {
+          // Report shutdown transitions only after the output has been released.
+          if (zone.power === true) {
+            this.log?.info?.('Zone "%s" on GPIO %s turned off', zone.name, zone.pin);
+          }
           zone.power = false;
           zone.service.updateCharacteristic(this.hap.Characteristic.On, false);
         }

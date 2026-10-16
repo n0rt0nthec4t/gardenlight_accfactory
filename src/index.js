@@ -407,4 +407,3 @@ async function shutdown(signal, exitCode = 0) {
 
   process.exit(shutdownExitCode);
 }
-

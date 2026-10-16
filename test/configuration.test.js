@@ -67,7 +67,15 @@ test('identities persist across reloads and invalid JSON is left intact', (t) =>
 
 test('web UI ports must be integers within the supported range', (t) => {
   const filename = configurationFile(t);
-  for (const [port, expected] of [[8581.5, 0], ['8581.5', 0], [0, 0], [-1, 0], [65536, 0], ['8581', 8581], [65535, 65535]]) {
+  for (const [port, expected] of [
+    [8581.5, 0],
+    ['8581.5', 0],
+    [0, 0],
+    [-1, 0],
+    [65536, 0],
+    ['8581', 8581],
+    [65535, 65535],
+  ]) {
     fs.writeFileSync(filename, JSON.stringify({ ...example(), options: { webUIPort: port } }));
     assert.equal(loadConfiguration(filename).options.webUIPort, expected);
     assert.equal(JSON.parse(fs.readFileSync(filename, 'utf8')).options.webUIPort, expected);

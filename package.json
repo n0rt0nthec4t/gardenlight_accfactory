@@ -2,7 +2,7 @@
   "name": "gardenlight-accfactory",
   "displayName": "Garden Light Accfactory",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Standalone HomeKit garden light zones using Raspberry Pi hardware PWM",
   "author": "n0rt0nthec4t",
   "license": "Apache-2.0",
